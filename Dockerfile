@@ -27,6 +27,7 @@ apt-get update && apt-get install -y gnupg software-properties-common && \
 wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | tee /usr/share/keyrings/hashicorp-archive-keyring.gpg && \
 echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list && \
 apt update && \
+curl -sL https://aka.ms/InstallAzureCLIDeb | bash && \
 # apt-get -y install terraform="1.4.3-1" && \
 # curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
 # unzip awscliv2.zip && \
@@ -36,9 +37,9 @@ apt update && \
 # mv ./kubectl /usr/bin/kubectl && \
 # curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp && \
 # mv /tmp/eksctl /usr/local/bin && \
-# wget -O helm.tar.gz https://get.helm.sh/helm-v3.12.0-linux-amd64.tar.gz && \
-# tar -zxvf helm.tar.gz && \
-# mv linux-amd64/helm /usr/local/bin/helm  && \
+wget -O helm.tar.gz https://get.helm.sh/helm-v3.12.0-linux-amd64.tar.gz && \
+tar -zxvf helm.tar.gz && \
+mv linux-amd64/helm /usr/local/bin/helm  && \
 npm install -g typescript && \
 npm install -g ts-node && \
 # # https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html#install-plugin-debian
