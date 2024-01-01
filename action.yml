@@ -1,0 +1,11 @@
+name: 'Hello World'
+description: 'Greet someone and record the time'
+inputs:
+  name:
+    description: 'token used to authenticate to terraform cloud'
+    required: true
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.name }}

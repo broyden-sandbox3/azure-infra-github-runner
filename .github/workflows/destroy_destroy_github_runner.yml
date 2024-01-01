@@ -1,0 +1,50 @@
+name: Destroy AWS Infra via Terraform
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  delete:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    # - name: Run EKS Delete Pods and services
+    #   id: hello
+    #   uses: broyden-sandbox3/aws-infra-action-eks-delete@v1.5
+    #   with:
+    #       aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #       aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #       aws_default_region: ${{ secrets.AWS_DEFAULT_REGION }}
+    #       cluster_name: MikeMorrisonTerraformCluster-cluster
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+          # terraform_version: 1.4.2
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+    - name: Terraform Format
+      id: fmt
+      run: terraform fmt -check
+    - name: Terraform Init
+      id: init
+      working-directory: ./src
+      run: terraform init
+    - name: Terraform Validate
+      id: validate
+      run: terraform validate -no-color
+    - name: Terraform Apply
+      working-directory: ./src
+      run: |
+        export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+        export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        terraform init
+        terraform destroy -auto-approve \
+        -input=false \
+        -var "access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" \
+        -var "secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+        -var "coint_api_asset_node_ecr_repo_name=${{ vars.ASSET_API_ECR_REPO_NAME }}" \
+        -var "github_runner_ami_id=test" \
+        -var "eks_cluster_name_ui=${{ vars.EKS_CLUSTER_NAME_UI }}" \
+        -var "eks_cluster_name_assets_api=${{ vars.EKS_CLUSTER_NAME_ASSETS_API }}"
